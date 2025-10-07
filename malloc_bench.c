@@ -71,13 +71,13 @@ static void run_benchmark(size_t num_elements) {
     // Make a large allocation every fourth time:
     allocations[i].size = get_next_alloc_size(i % 4 != 3);
     allocations[i].ptr = malloc(allocations[i].size);
-    dbg_verbose("malloc()'d %ld bytes: %#p\n", allocations[i].size, allocations[i].ptr);
+    dbg_verbose("malloc()'d %ld bytes: 0x%p\n", allocations[i].size, allocations[i].ptr);
   }
   COLLECT_STATS(stats_after_malloc);
   // free every third pointer:
   for (size_t i = 0; i < nitems(allocations); i += 3) {
     free(allocations[i].ptr);
-    dbg_verbose("free'd() %ld bytes: %#p\n", allocations[i].size, allocations[i].ptr);
+    dbg_verbose("free'd() %ld bytes: 0x%p\n", allocations[i].size, allocations[i].ptr);
     allocations[i].ptr = NULL;
   }
   COLLECT_STATS(stats_after_partial_free);
@@ -89,13 +89,13 @@ static void run_benchmark(size_t num_elements) {
       // Add a new allocation in the free'd slots
       allocations[i].size = new_size;
       allocations[i].ptr = calloc(new_size, 1);
-      dbg_verbose("calloc()'d %ld bytes: %#p\n", allocations[i].size,
+      dbg_verbose("calloc()'d %ld bytes: 0x%p\n", allocations[i].size,
           allocations[i].ptr);
       continue;
     }
     // otherwise resize the allocations to a new size
     void *new_pointer = realloc(allocations[i].ptr, new_size);
-    dbg_verbose("Relloc'd %ld -> %ld bytes: %#p -> %#p\n", allocations[i].size,
+    dbg_verbose("Relloc'd %ld -> %ld bytes: 0x%p -> 0x%p\n", allocations[i].size,
         new_size, allocations[i].ptr, new_pointer);
     allocations[i].size = new_size;
     allocations[i].ptr = new_pointer;
@@ -104,16 +104,16 @@ static void run_benchmark(size_t num_elements) {
   // finally free everything:
   for (size_t i = 0; i < nitems(allocations); i++) {
     free(allocations[i].ptr);
-    dbg_verbose("free'd() %ld bytes: %#p\n", allocations[i].size, allocations[i].ptr);
+    dbg_verbose("free'd() %ld bytes: 0x%p\n", allocations[i].size, allocations[i].ptr);
     allocations[i].ptr = NULL;
   }
   COLLECT_STATS(stats_at_end);
 #if HAVE_STATCOUNTERS
-  dbg("User instructions for malloc() loop:     %12" PRId64 "\n", stats_after_malloc.inst_user - stats_start.inst_user);
-  dbg("User instructions for free() loop:       %12" PRId64 "\n", stats_after_partial_free.inst_user - stats_after_malloc.inst_user);
-  dbg("User instructions for realloc() loop:    %12" PRId64 "\n", stats_after_realloc.inst_user - stats_after_partial_free.inst_user);
-  dbg("User instructions for final free() loop: %12" PRId64 "\n", stats_at_end.inst_user - stats_after_realloc.inst_user);
-  dbg("User instructions (total):               %12" PRId64 "\n", stats_at_end.inst_user - stats_start.inst_user);
+  dbg("User instructions for malloc() loop:     %12" PRId64 "\n", stats_after_malloc.instructions - stats_start.instructions);
+  dbg("User instructions for free() loop:       %12" PRId64 "\n", stats_after_partial_free.instructions - stats_after_malloc.instructions);
+  dbg("User instructions for realloc() loop:    %12" PRId64 "\n", stats_after_realloc.instructions - stats_after_partial_free.instructions);
+  dbg("User instructions for final free() loop: %12" PRId64 "\n", stats_at_end.instructions - stats_after_realloc.instructions);
+  dbg("User instructions (total):               %12" PRId64 "\n", stats_at_end.instructions - stats_start.instructions);
 #endif
   REPORT_STATS("-initial-malloc", &stats_after_malloc, &stats_start);
   REPORT_STATS("-partial-free", &stats_after_partial_free, &stats_after_malloc);
