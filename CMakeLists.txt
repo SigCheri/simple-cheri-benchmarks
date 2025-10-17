@@ -243,6 +243,8 @@ if (CAN_LINK_STATIC)
     target_link_options(malloc_bench_static PRIVATE -static)
 endif()
 
+add_simple_benchmark(secret_fork_bench secret_fork_bench.c)
+
 configure_file(malloc_benchmark.sh.in ${CMAKE_CURRENT_BINARY_DIR}/malloc_benchmark.sh @ONLY)
 configure_file(run_cheribsd.sh.in ${CMAKE_CURRENT_BINARY_DIR}/run_cheribsd.sh @ONLY)
 configure_file(run_jenkins-bluehive.sh ${CMAKE_CURRENT_BINARY_DIR}/run_jenkins-bluehive.sh @ONLY)
