@@ -63,7 +63,7 @@ include(CheckPIESupported)
 check_pie_supported()
 
 # Default to -O2
-add_compile_options(-O2)
+# add_compile_options(-O2)
 
 #add_library(qsort SHARED qsort.c)
 #add_executable(test_qsort test_qsort.c)
@@ -244,6 +244,7 @@ if (CAN_LINK_STATIC)
 endif()
 
 add_simple_benchmark(secret_fork_bench secret_fork_bench.c)
+add_simple_benchmark(sig_test_bench sig_test_bench.c)
 
 configure_file(malloc_benchmark.sh.in ${CMAKE_CURRENT_BINARY_DIR}/malloc_benchmark.sh @ONLY)
 configure_file(run_cheribsd.sh.in ${CMAKE_CURRENT_BINARY_DIR}/run_cheribsd.sh @ONLY)
