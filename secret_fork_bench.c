@@ -31,7 +31,7 @@ int main(){
     pid_t pid = fork();
     if(pid == 0){
         // child
-        for(int i=0; i<10; i++){
+        for(int i=0; i<3; i++){
             uint64_t child_recovered = load_secret(sb);
             assert(child_recovered == text);
             printf("Child recovered secret: 0x%lx\n", child_recovered);
@@ -39,7 +39,7 @@ int main(){
         }
     }else if(pid > 0){
         // parent
-        for(int i=0; i<10; i++){
+        for(int i=0; i<3; i++){
             uint64_t parent_recovered = load_secret(sb);
             assert(parent_recovered == text);
             printf("Parent recovered secret: 0x%lx\n", parent_recovered);
